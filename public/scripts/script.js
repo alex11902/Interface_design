@@ -7,7 +7,7 @@ async function fetchData(url, updateFunction) {
     try {
         const response = await fetch(url);
         const data = await response.json();
-        updateFunction(data); // Ruft die Funktion zur Aktualisierung des DOM auf
+        updateFunction(data);
     } catch (error) {
         console.error("Fehler beim Abrufen der Daten:", error);
     }

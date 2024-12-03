@@ -5,6 +5,10 @@ const AIR_QUALITY_API_URL = "https://interface-design.onrender.com/air-quality";
 // DOM-Elementreferenzen
 const scoreBackground = document.getElementById("score-background");
 const infoBox = document.getElementById("info-box");
+const cityIcon = document.getElementById("city-icon");
+const cityName = document.getElementById("city-name");
+
+// Icons für Wetter und Luftqualität
 const weatherIcons = {
     Sunny: "./assets/icons/quality/Sunny.svg",
     Rain: "./assets/icons/quality/Rain.svg",
@@ -16,37 +20,6 @@ const airQualityIcons = {
     medium: "./assets/icons/quality/airquality_medium.svg",
     bad: "./assets/icons/quality/airquality_bad.svg",
 };
-
-// Funktion zum Interpolieren von Farben
-function blendColor(startColor, endColor, percentage) {
-    const hexToDec = (hex) => parseInt(hex, 16);
-    const decToHex = (dec) => dec.toString(16).padStart(2, "0");
-
-    const r = Math.round(
-        hexToDec(startColor.slice(0, 2)) +
-            percentage * (hexToDec(endColor.slice(0, 2)) - hexToDec(startColor.slice(0, 2)))
-    );
-    const g = Math.round(
-        hexToDec(startColor.slice(2, 4)) +
-            percentage * (hexToDec(endColor.slice(2, 4)) - hexToDec(startColor.slice(2, 4)))
-    );
-    const b = Math.round(
-        hexToDec(startColor.slice(4, 6)) +
-            percentage * (hexToDec(endColor.slice(4, 6)) - hexToDec(startColor.slice(4, 6)))
-    );
-
-    return `#${decToHex(r)}${decToHex(g)}${decToHex(b)}`;
-}
-
-// Dynamische Anpassung der Sphäre basierend auf dem Score
-function updateSphere(score) {
-    const startColor = "87ceeb"; // Himmelblau (gut)
-    const endColor = "333"; // Dunkelgrau/Schwarz (schlecht)
-    const percentage = Math.min(Math.max(score / 100, 0), 1);
-    const color = blendColor(startColor, endColor, 1 - percentage);
-
-    scoreBackground.style.background = `radial-gradient(circle, ${color} 0%, #000 100%)`;
-}
 
 // Funktion zum Abrufen und Verarbeiten von API-Daten
 async function fetchData(url, updateFunction) {
@@ -62,16 +35,14 @@ async function fetchData(url, updateFunction) {
 // Wetterdaten aktualisieren
 function updateWeather(data) {
     if (data && data.main && data.weather) {
-        document.getElementById("temperature").textContent = `Temperatur: ${data.main.temp}°C`;
-        document.getElementById("description").textContent = `Beschreibung: ${data.weather[0].description}`;
-        
+        // Setzt das Wettericon und zeigt eine Beschreibung
         const weatherType = data.weather[0].main; // Bsp.: "Rain", "Sunny", etc.
-        if (weatherIcons[weatherType]) {
-            infoBox.innerHTML = `
-                <img src="${weatherIcons[weatherType]}" alt="${weatherType}" style="width: 80px;">
-                <p>Wetter: ${weatherType}</p>
-            `;
-        }
+        cityIcon.style.display = "none"; // Versteckt das Stadticon
+        infoBox.innerHTML = `
+            <img src="${weatherIcons[weatherType]}" alt="${weatherType}" style="width: 50px;">
+            <p>Wetter: ${weatherType}</p>
+        `;
+        cityName.textContent = `${data.weather[0].description}`; // Minimalbeschreibung
     } else {
         console.error("Ungültige Wetterdaten:", data);
     }
@@ -80,32 +51,50 @@ function updateWeather(data) {
 // Luftqualitätsdaten aktualisieren
 function updateAirQuality(data) {
     if (data && data.data && data.data.aqi !== undefined) {
-        const airQualityType =
-            data.data.aqi <= 50 ? "good" : data.data.aqi <= 100 ? "medium" : "bad";
-
-        if (airQualityIcons[airQualityType]) {
-            infoBox.innerHTML = `
-                <img src="${airQualityIcons[airQualityType]}" alt="${airQualityType}" style="width: 80px;">
-                <p>Luftqualität: ${airQualityType}</p>
-            `;
-        }
+        // Setzt das Luftqualitätsicon und zeigt eine Beschreibung
+        const airQualityType = data.data.aqi <= 50 ? "good" : data.data.aqi <= 100 ? "medium" : "bad";
+        cityIcon.style.display = "none"; // Versteckt das Stadticon
+        infoBox.innerHTML = `
+            <img src="${airQualityIcons[airQualityType]}" alt="${airQualityType}" style="width: 50px;">
+            <p>Luftqualität: ${airQualityType}</p>
+        `;
+        cityName.textContent = `Luftqualität ist ${airQualityType}`; // Minimalbeschreibung
     } else {
         console.error("Ungültige Luftqualitätsdaten:", data);
     }
 }
 
-// Pfeiltasten-Logik für Wetter und Luftqualität
+// Hintergrundgradient basierend auf Score aktualisieren
+function updateGradient(score) {
+    const gradientColor = score > 70 ? "#009957" : score > 40 ? "#777" : "#333";
+    scoreBackground.style.background = `radial-gradient(circle, ${gradientColor} 0%, #000 100%)`;
+}
+
+// Pfeiltasten-Logik
+let currentState = "city"; // Der Standardzustand ist "city"
+
 document.addEventListener("keydown", (e) => {
-    if (e.key === "ArrowRight") {
-        fetchData(AIR_QUALITY_API_URL, updateAirQuality);
-    } else if (e.key === "ArrowLeft") {
+    if (e.key === "ArrowLeft" && currentState === "city") {
+        // Wenn wir in der City-Ansicht sind und nach links drücken, zeigt das Wetter an
         fetchData(WEATHER_API_URL, updateWeather);
+        currentState = "weather"; // Setzt den Zustand auf "weather"
+    } else if (e.key === "ArrowRight" && currentState === "weather") {
+        // Wenn wir in der Wetteransicht sind und nach rechts drücken, zeigt die Stadt an
+        cityIcon.style.display = "block"; // Zeigt das Stadticon wieder an
+        infoBox.innerHTML = ""; // Löscht die InfoBox
+        cityName.textContent = "Freiburg"; // Setzt den Stadtnamen zurück
+        currentState = "city"; // Setzt den Zustand auf "city"
+    } else if (e.key === "ArrowRight" && currentState === "city") {
+        // Wenn wir in der City-Ansicht sind und nach rechts drücken, zeigt die Luftqualität an
+        fetchData(AIR_QUALITY_API_URL, updateAirQuality);
+        currentState = "airQuality"; // Setzt den Zustand auf "airQuality"
+    } else if (e.key === "ArrowLeft" && currentState === "airQuality") {
+        // Wenn wir in der Luftqualitätsansicht sind und nach links drücken, zeigt das Wetter an
+        fetchData(WEATHER_API_URL, updateWeather);
+        currentState = "weather"; // Setzt den Zustand auf "weather"
     }
 });
 
 // Initialdaten abrufen und anzeigen
 fetchData(WEATHER_API_URL, updateWeather);
 fetchData(AIR_QUALITY_API_URL, updateAirQuality);
-
-// Initialisiere die Sphäre mit einem Test-Score
-updateSphere(85); // Beispielscore

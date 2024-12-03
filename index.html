@@ -3,9 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Interface Design - Freiburg</title>
+    <link rel="stylesheet" href="./styles/style.css">
 </head>
 <body>
-    
+    <div id="app">
+        <!-- Überschrift -->
+        <header>
+            <h1>Freiburg Reflections</h1>
+        </header>
+
+        <!-- Hauptcontainer für die Stadtvisualisierung -->
+        <section id="visualization">
+            <div id="city-display">
+                <!-- Dynamische Inhalte, wie z.B. die Karte oder die Reflektion -->
+            </div>
+        </section>
+
+        <!-- Datenanzeige -->
+        <section id="data-display">
+            <div id="weather">
+                <h2>Wetterdaten</h2>
+                <p id="temperature">Temperatur: -</p>
+                <p id="description">Beschreibung: -</p>
+            </div>
+            <div id="airquality">
+                <h2>Luftqualität</h2>
+                <p id="aqi">AQI: -</p>
+                <p id="pollutionLevel">Dominanter Schadstoff: -</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- JavaScript einbinden -->
+    <script src="./scripts/script.js"></script>
 </body>
 </html>

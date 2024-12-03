@@ -1,6 +1,6 @@
 // URLs für APIs
-const weatherUrl = "";
-const airQualityUrl = "";
+const WEATHER_API_URL = "https://interface-design.onrender.com/weather";
+const AIR_QUALITY_API_URL = "https://interface-design.onrender.com/air-quality";
 
 // Daten abrufen und anzeigen
 async function fetchData(url, updateFunction) {

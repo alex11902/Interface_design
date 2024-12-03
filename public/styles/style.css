@@ -11,22 +11,28 @@ body {
     overflow: hidden;
 }
 
-
+/* Header für zusätzliche Struktur */
 header {
-    background: #00796b;
-    color: white;
-    padding: 20px;
+    position: absolute;
+    top: 10px;
+    width: 100%;
     text-align: center;
+    font-size: 1.5rem;
+    color: #009957;
+    font-weight: bold;
+    z-index: 2;
 }
 
+/* Hauptcontainer für die Anzeige */
 #container {
     text-align: center;
     position: relative;
 }
 
+/* Sphäre für den Score-Hintergrund */
 #score-background {
-    width: 300px;
-    height: 300px;
+    width: 350px;
+    height: 350px;
     background: radial-gradient(circle, #009957 0%, #000 100%);
     border-radius: 50%;
     position: absolute;
@@ -36,38 +42,74 @@ header {
     z-index: 1;
 }
 
+/* Stadt-Icon */
 #city-icon {
     width: 150px;
     height: auto;
     z-index: 2;
     position: relative;
+    margin: 0 auto;
+    display: block;
 }
 
+/* Stadtname */
 #city-name {
-    font-size: 2rem;
+    font-size: 1.8rem;
+    color: #fff;
+    margin-top: 10px;
     z-index: 2;
     position: relative;
 }
 
+/* Infobox für Wetter/Luftqualität */
 #info-box {
-    margin-top: 20px;
+    margin-top: 30px;
     font-size: 1.2rem;
+    color: #ddd;
     z-index: 2;
     position: relative;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 15px 20px;
+    border-radius: 10px;
+    border: 1px solid #009957;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
 }
 
-
+/* Datenanzeige-Container */
 #data-display {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 20px;
+    display: none; /* Ausgeblendet, wenn nicht benötigt */
 }
 
+/* Wetter- und Luftqualitätsboxen */
 #weather, #airquality {
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 10px;
-    width: 45%;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background-color: #111;
+    color: #fff;
+    border: 1px solid #009957;
+    border-radius: 10px;
+    padding: 15px;
+    width: 150px;
+    text-align: center;
+    margin: 10px auto;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Animation für dynamische Elemente */
+#score-background {
+    animation: pulse 5s infinite;
+}
+
+/* Pulsiereffekt für die Sphäre */
+@keyframes pulse {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.05);
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+    }
 }

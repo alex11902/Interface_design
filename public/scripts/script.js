@@ -17,6 +17,37 @@ const airQualityIcons = {
     bad: "./assets/icons/quality/airquality_bad.svg",
 };
 
+// Funktion zum Interpolieren von Farben
+function blendColor(startColor, endColor, percentage) {
+    const hexToDec = (hex) => parseInt(hex, 16);
+    const decToHex = (dec) => dec.toString(16).padStart(2, "0");
+
+    const r = Math.round(
+        hexToDec(startColor.slice(0, 2)) +
+            percentage * (hexToDec(endColor.slice(0, 2)) - hexToDec(startColor.slice(0, 2)))
+    );
+    const g = Math.round(
+        hexToDec(startColor.slice(2, 4)) +
+            percentage * (hexToDec(endColor.slice(2, 4)) - hexToDec(startColor.slice(2, 4)))
+    );
+    const b = Math.round(
+        hexToDec(startColor.slice(4, 6)) +
+            percentage * (hexToDec(endColor.slice(4, 6)) - hexToDec(startColor.slice(4, 6)))
+    );
+
+    return `#${decToHex(r)}${decToHex(g)}${decToHex(b)}`;
+}
+
+// Dynamische Anpassung der Sphäre basierend auf dem Score
+function updateSphere(score) {
+    const startColor = "87ceeb"; // Himmelblau (gut)
+    const endColor = "333"; // Dunkelgrau/Schwarz (schlecht)
+    const percentage = Math.min(Math.max(score / 100, 0), 1);
+    const color = blendColor(startColor, endColor, 1 - percentage);
+
+    scoreBackground.style.background = `radial-gradient(circle, ${color} 0%, #000 100%)`;
+}
+
 // Funktion zum Abrufen und Verarbeiten von API-Daten
 async function fetchData(url, updateFunction) {
     try {
@@ -34,11 +65,10 @@ function updateWeather(data) {
         document.getElementById("temperature").textContent = `Temperatur: ${data.main.temp}°C`;
         document.getElementById("description").textContent = `Beschreibung: ${data.weather[0].description}`;
         
-        // Icon basierend auf Wettertyp aktualisieren
         const weatherType = data.weather[0].main; // Bsp.: "Rain", "Sunny", etc.
         if (weatherIcons[weatherType]) {
             infoBox.innerHTML = `
-                <img src="${weatherIcons[weatherType]}" alt="${weatherType}" style="width: 50px;">
+                <img src="${weatherIcons[weatherType]}" alt="${weatherType}" style="width: 80px;">
                 <p>Wetter: ${weatherType}</p>
             `;
         }
@@ -50,18 +80,12 @@ function updateWeather(data) {
 // Luftqualitätsdaten aktualisieren
 function updateAirQuality(data) {
     if (data && data.data && data.data.aqi !== undefined) {
-        document.getElementById("aqi").textContent = `AQI: ${data.data.aqi}`;
-        document.getElementById("pollutionLevel").textContent =
-            data.data.dominentpol
-                ? `Dominanter Schadstoff: ${data.data.dominentpol}`
-                : "Dominanter Schadstoff: Keine Daten verfügbar";
-
-        // Icon basierend auf AQI-Bereich aktualisieren
         const airQualityType =
             data.data.aqi <= 50 ? "good" : data.data.aqi <= 100 ? "medium" : "bad";
+
         if (airQualityIcons[airQualityType]) {
             infoBox.innerHTML = `
-                <img src="${airQualityIcons[airQualityType]}" alt="${airQualityType}" style="width: 50px;">
+                <img src="${airQualityIcons[airQualityType]}" alt="${airQualityType}" style="width: 80px;">
                 <p>Luftqualität: ${airQualityType}</p>
             `;
         }
@@ -70,19 +94,11 @@ function updateAirQuality(data) {
     }
 }
 
-// Hintergrundgradient basierend auf Score aktualisieren
-function updateGradient(score) {
-    const gradientColor = score > 70 ? "#009957" : score > 40 ? "#777" : "#333";
-    scoreBackground.style.background = `radial-gradient(circle, ${gradientColor} 0%, #000 100%)`;
-}
-
 // Pfeiltasten-Logik für Wetter und Luftqualität
 document.addEventListener("keydown", (e) => {
     if (e.key === "ArrowRight") {
-        // Zeige Luftqualitätsdaten
         fetchData(AIR_QUALITY_API_URL, updateAirQuality);
     } else if (e.key === "ArrowLeft") {
-        // Zeige Wetterdaten
         fetchData(WEATHER_API_URL, updateWeather);
     }
 });
@@ -90,3 +106,6 @@ document.addEventListener("keydown", (e) => {
 // Initialdaten abrufen und anzeigen
 fetchData(WEATHER_API_URL, updateWeather);
 fetchData(AIR_QUALITY_API_URL, updateAirQuality);
+
+// Initialisiere die Sphäre mit einem Test-Score
+updateSphere(85); // Beispielscore

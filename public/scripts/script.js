@@ -7,7 +7,7 @@ async function fetchData(url, updateFunction) {
     try {
         const response = await fetch(url);
         const data = await response.json();
-        updateFunction(data);
+        updateFunction(data); // Ruft die Funktion zur Aktualisierung des DOM auf
     } catch (error) {
         console.error("Fehler beim Abrufen der Daten:", error);
     }
@@ -15,16 +15,27 @@ async function fetchData(url, updateFunction) {
 
 // Wetterdaten anzeigen
 function updateWeather(data) {
-    document.getElementById("temperature").textContent = `Temperatur: ${data.temperature}°C`;
-    document.getElementById("description").textContent = `Beschreibung: ${data.description}`;
+    if (data && data.main && data.weather) {
+        document.getElementById("temperature").textContent = `Temperatur: ${data.main.temp}°C`;
+        document.getElementById("description").textContent = `Beschreibung: ${data.weather[0].description}`;
+    } else {
+        console.error("Ungültige Wetterdaten:", data);
+    }
 }
 
 // Luftqualitätsdaten anzeigen
 function updateAirQuality(data) {
-    document.getElementById("aqi").textContent = `AQI: ${data.aqi}`;
-    document.getElementById("pollutionLevel").textContent = `Dominanter Schadstoff: ${data.pollutionLevel}`;
+    if (data && data.data && data.data.aqi !== undefined) {
+        document.getElementById("aqi").textContent = `AQI: ${data.data.aqi}`;
+        document.getElementById("pollutionLevel").textContent =
+            data.data.dominentpol
+                ? `Dominanter Schadstoff: ${data.data.dominentpol}`
+                : "Dominanter Schadstoff: Keine Daten verfügbar";
+    } else {
+        console.error("Ungültige Luftqualitätsdaten:", data);
+    }
 }
 
 // Daten abrufen
-fetchData(weatherUrl, updateWeather);
-fetchData(airQualityUrl, updateAirQuality);
+fetchData(WEATHER_API_URL, updateWeather);
+fetchData(AIR_QUALITY_API_URL, updateAirQuality);

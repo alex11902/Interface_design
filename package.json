@@ -1,0 +1,16 @@
+{
+  "name": "interface_design",
+  "version": "1.0.0",
+  "description": "Dieses Projekt visualisiert die Reflektionen der Stadt Freiburg, basierend auf Wetter- und Luftqualitätsdaten.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": ["weather", "air quality", "Freiburg", "interface design"],
+  "author": "Alexander Holstein",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "node-fetch": "^2.6.7"
+  }
+}

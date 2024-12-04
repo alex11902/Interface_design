@@ -59,9 +59,8 @@ function updateAirQuality(data) {
         cityIcon.style.display = "none"; // Versteckt das Stadticon
         infoBox.innerHTML = `
             <img src="${airQualityIcons[airQualityType]}" alt="${airQualityType}" style="width: 50px;">
-            <p>Luftqualität: ${airQualityType}</p>
-        `;
-        cityName.textContent = `Luftqualität ist ${airQualityType}`; // Minimalbeschreibung
+            <p>Luftqualität: ${airQualityType}</p>`;
+        //cityName.textContent = `Luftqualität ist ${airQualityType}`; // Minimalbeschreibung
     } else {
         if (!data || !data.main || !data.aqi) {
             infoBox.innerHTML = "<p>Luftqualitätsdaten nicht verfügbar</p>";
@@ -71,7 +70,7 @@ function updateAirQuality(data) {
 
 // Hintergrundgradient basierend auf Score aktualisieren
 function updateGradient(score) {
-    const gradientColor = score > 70 ? "#009957" : score > 40 ? "#777" : "#333";
+    const gradientColor = score > 70 ? "#00b2ff7d" : score > 40 ? "#777" : "#333";
     scoreBackground.style.background = `radial-gradient(circle, ${gradientColor} 0%, #000 100%)`;
 }
 

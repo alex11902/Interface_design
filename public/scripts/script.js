@@ -12,11 +12,10 @@ const cityName = document.getElementById("city-name");
 const weatherIcons = {
     Storm: "",
 };
-const airQualityIcons = {
-    good: "./assets/icons/quality/",
-    medium: "./assets/icons/quality/airquality_medium.svg",
-    bad: "public/assets/icons/quality/airquality_bad.svg",
-};
+
+    const good = "./assets/icons/quality/airquality_good.svg"
+    const medium = ""
+    const bad = ""
 
 // Funktion zum Abrufen und Verarbeiten von API-Daten
 async function fetchData(url, updateFunction) {

@@ -12,10 +12,11 @@ const cityName = document.getElementById("city-name");
 const weatherIcons = {
     Storm: "",
 };
-
-    const good = "./assets/icons/quality/airquality_good.svg"
-    const medium = ""
-    const bad = ""
+const airQualityIcons = {
+    good: "./assets/icons/quality/",
+    medium: "./assets/icons/quality/airquality_medium.svg",
+    bad: "public/assets/icons/quality/airquality_bad.svg",
+};
 
 // Funktion zum Abrufen und Verarbeiten von API-Daten
 async function fetchData(url, updateFunction) {
@@ -42,7 +43,7 @@ function updateWeather(data) {
         `;
         cityName.textContent = `${data.weather[0].description}`; // Minimalbeschreibung
     } else {
-        if (!data || !data.main || !data.weather || !data.main.temp ) {
+        if (!data || !data.main || !data.weather) {
             infoBox.innerHTML = "<p>Wetterdaten nicht verfügbar</p>";
         }
         
@@ -61,9 +62,7 @@ function updateAirQuality(data) {
             <p>Luftqualität: ${airQualityType}</p>`;
         //cityName.textContent = `Luftqualität ist ${airQualityType}`; // Minimalbeschreibung
     } else {
-        if (!data || !data.main || !data.aqi) {
-            infoBox.innerHTML = "<p>Luftqualitätsdaten nicht verfügbar</p>";
-        }
+        
     }
 }
 

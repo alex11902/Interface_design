@@ -42,7 +42,7 @@ function updateWeather(data) {
         `;
         cityName.textContent = `${data.weather[0].description}`; // Minimalbeschreibung
     } else {
-        if (!data || !data.main || !data.weather) {
+        if (!data || !data.main || !data.weather || !data.main.temp ) {
             infoBox.innerHTML = "<p>Wetterdaten nicht verfügbar</p>";
         }
         

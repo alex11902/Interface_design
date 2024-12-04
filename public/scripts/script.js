@@ -32,20 +32,24 @@ async function fetchData(url, updateFunction) {
 // Wetterdaten aktualisieren
 function updateWeather(data) {
     if (data && data.main && data.weather) {
-        // Setzt das Wettericon und zeigt eine Beschreibung
+        // Setzt das Wettericon und zeigt die Temperatur an
         const weatherType = data.weather[0].main; // Bsp.: "Rain", "Sunny", etc.
+        const temperature = data.main.temp; // Aktuelle Temperatur
         cityIcon.style.display = "none"; // Versteckt das Stadticon
         infoBox.innerHTML = `
             <img src="${weatherIcons[weatherType]}" alt="${weatherType}" style="width: 50px;">
             <p>Wetter: ${weatherType}</p>
+            <p>Temperatur: ${temperature}°C</p>
         `;
         cityName.textContent = `${data.weather[0].description}`; // Minimalbeschreibung
     } else {
         if (!data || !data.main || !data.weather) {
             infoBox.innerHTML = "<p>Wetterdaten nicht verfügbar</p>";
         }
+        
     }
 }
+
 
 // Luftqualitätsdaten aktualisieren
 function updateAirQuality(data) {

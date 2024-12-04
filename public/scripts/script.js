@@ -10,13 +10,10 @@ const cityName = document.getElementById("city-name");
 
 // Icons für Wetter und Luftqualität
 const weatherIcons = {
-    Sunny: "./assets/icons/quality/Sunny.svg",
-    Rain: "",
-    Snowy: "",
     Storm: "",
 };
 const airQualityIcons = {
-    good: "public/icons/quality/airquality_good.svg",
+    good: "./assets/icons/quality/",
     medium: "./assets/icons/quality/airquality_medium.svg",
     bad: "public/assets/icons/quality/airquality_bad.svg",
 };
@@ -44,7 +41,9 @@ function updateWeather(data) {
         `;
         cityName.textContent = `${data.weather[0].description}`; // Minimalbeschreibung
     } else {
-        console.error("Ungültige Wetterdaten:", data);
+        if (!data || !data.main || !data.weather) {
+            infoBox.innerHTML = "<p>Wetterdaten nicht verfügbar</p>";
+        }
     }
 }
 
@@ -60,7 +59,9 @@ function updateAirQuality(data) {
         `;
         cityName.textContent = `Luftqualität ist ${airQualityType}`; // Minimalbeschreibung
     } else {
-        console.error("Ungültige Luftqualitätsdaten:", data);
+        if (!data || !data.main || !data.aqi) {
+            infoBox.innerHTML = "<p>Luftqualitätsdaten nicht verfügbar</p>";
+        }
     }
 }
 

@@ -10,15 +10,15 @@ const cityName = document.getElementById("city-name");
 
 // Icons für Wetter und Luftqualität
 const weatherIcons = {
-    Sunny: "./assets/icons/quality/Sunny.svg",
-    Rain: "./assets/icons/quality/Rain.svg",
-    Snowy: "./assets/icons/quality/Snowy.svg",
-    Storm: "./assets/icons/quality/Storm.svg",
+    Sunny: "assets/icons/quality/Sunny.svg",
+    Rain: "",
+    Snowy: "",
+    Storm: "",
 };
 const airQualityIcons = {
-    good: "./assets/icons/quality/airquality_good.svg",
+    good: "public/icons/quality/airquality_good.svg",
     medium: "./assets/icons/quality/airquality_medium.svg",
-    bad: "./assets/icons/quality/airquality_bad.svg",
+    bad: "public/assets/icons/quality/airquality_bad.svg",
 };
 
 // Funktion zum Abrufen und Verarbeiten von API-Daten

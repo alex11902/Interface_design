@@ -10,7 +10,7 @@ const cityName = document.getElementById("city-name");
 
 // Icons für Wetter und Luftqualität
 const weatherIcons = {
-    Sunny: "assets/icons/quality/Sunny.svg",
+    Sunny: "./assets/icons/quality/Sunny.svg",
     Rain: "",
     Snowy: "",
     Storm: "",

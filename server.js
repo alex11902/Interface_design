@@ -8,6 +8,9 @@ const PORT = 3000;
 const path = require("path");
 app.use(express.static(path.join(__dirname, "public")));
 
+// Statische Dateien bereitstellen
+app.use("/assets", express.static(path.join(__dirname, "assets")));
+
 // Wetterdaten-Endpunkt
 const WEATHER_API_KEY = "ccfe51382ba398aa60bb08056f21c443"; // Dein OpenWeatherMap API-Schlüssel
 app.get("/weather", async (req, res) => {

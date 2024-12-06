@@ -11,7 +11,7 @@ const DataDisplay = document.getElementById("data-display");
 
 // Icons für Wetter und Luftqualität
 const weatherIcons = {
-    Storm: "public/assets/icons/quality/Rain.svg",
+    Storm: "./public/assets/icons/quality/Rain.svg",
 };
 const airQualityIcons = {
     good: "./assets/icons/quality/",

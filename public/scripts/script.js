@@ -45,14 +45,13 @@ function updateWeather(data) {
         infoBox.innerHTML = `
             <img src="${weatherIcons[weatherType]}" alt="${weatherType}" style="width: 50px;">
             <p>Wetter: ${weatherType}</p>
-            <p>Temperatur: ${temperature}°C</p>
-        `;
+            <p>Temperatur: ${temperature}°C</p>`;
         cityName.textContent = `${data.weather[0].description}`; // Minimalbeschreibung
     } else {
         if (!data || !data.main || !data.weather) {
             infoBox.innerHTML = "<p>Wetterdaten nicht verfügbar</p>";
         }
-        
+
     }
 }
 

@@ -60,8 +60,8 @@ function updateAirQuality(data) {
 
         showInfoBox(`
             <img src="${airQualityIcons[airQualityType]}" alt="${airQualityType}" style="width: 50px;">
-            <p>AQI: ${data.data.aqi} (${airQualityType})</p>
-        `, `Luftqualität: ${airQualityType}`);
+            <p>AQI: ${data.data.aqi} (${airQualityType})</p>`, 
+            `Luftqualität: ${airQualityType}`);
     } else {
         displayError("Luftqualitätsdaten nicht verfügbar");
     }
@@ -109,8 +109,9 @@ document.addEventListener("keydown", (e) => {
             break;
 
         case "ArrowLeft-airQuality":
-            fetchData(WEATHER_API_URL, updateWeather);
-            currentState = "weather";
+            // Zurück zur Stadtansicht
+            resetToCity();
+            currentState = "city";
             break;
 
         default:

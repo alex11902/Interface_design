@@ -77,7 +77,7 @@ function showInfoBox(content, description) {
 // Funktion zur Rückkehr zur Stadtansicht
 function resetToCity() {
     cityIcon.style.display = "block";
-    infoBox.innerHTML = "";
+    infoBox.style.display = "none";
     cityName.textContent = "Freiburg";
 }
 

@@ -9,7 +9,6 @@ const cityIcon = document.getElementById("city-icon");
 const cityName = document.getElementById("city-name");
 const DataDisplay = document.getElementById("data-display");
 
-
 // Icons für Wetter und Luftqualität
 const weatherIcons = {
     Storm: "public/assets/icons/quality/Rain.svg",
@@ -28,50 +27,58 @@ async function fetchData(url, updateFunction) {
         updateFunction(data);
     } catch (error) {
         console.error("Fehler beim Abrufen der Daten", error);
-        infoBox.innerHTML = "Fehler beim Abrufen der Daten";
-        DataDisplay.style.display = "none"; // verstecken von Datenanzeige die sich sonst hinter der Pulssphäre befindet
-        
-
+        displayError("Daten konnten nicht abgerufen werden");
     }
+}
+
+// Funktion zum Anzeigen eines Fehlers
+function displayError(message) {
+    infoBox.innerHTML = `<p>${message}</p>`;
+    DataDisplay.style.display = "none";
 }
 
 // Wetterdaten aktualisieren
 function updateWeather(data) {
-    if (data && data.main && data.weather) {
-        // Setzt das Wettericon und zeigt die Temperatur an
-        const weatherType = data.weather[0].main; // Bsp.: "Rain", "Sunny", etc.
-        const temperature = Math.round(data.main.temp); // Temperatur wird gerundet
-        cityIcon.style.display = "none"; // Versteckt das Stadticon
-        infoBox.innerHTML = `
+    if (data?.main?.temp && data.weather?.[0]?.main) {
+        const weatherType = data.weather[0].main;
+        const temperature = Math.round(data.main.temp);
+
+        showInfoBox(`
             <img src="${weatherIcons[weatherType]}" alt="${weatherType}" style="width: 50px;">
             <p>Wetter: ${weatherType}</p>
-            <p>Temperatur: ${temperature}°C</p>`;
-        cityName.textContent = `${data.weather[0].description}`; // Minimalbeschreibung
+            <p>Temperatur: ${temperature}°C</p>
+        `, `${data.weather[0].description}`);
     } else {
-        if (!data || !data.main || !data.weather) {
-            infoBox.innerHTML = "<p>Wetterdaten nicht verfügbar</p>";
-        }
-
+        displayError("Wetterdaten nicht verfügbar");
     }
 }
 
-
 // Luftqualitätsdaten aktualisieren
 function updateAirQuality(data) {
-    if (data && data.data && data.data.aqi !== undefined) {
-        // Setzt das Luftqualitätsicon und zeigt eine Beschreibung
+    if (data?.data?.aqi !== undefined) {
         const airQualityType = data.data.aqi <= 50 ? "good" : data.data.aqi <= 100 ? "medium" : "bad";
-        cityIcon.style.display = "none"; // Versteckt das Stadticon
-        infoBox.innerHTML = `
+
+        showInfoBox(`
             <img src="${airQualityIcons[airQualityType]}" alt="${airQualityType}" style="width: 50px;">
-            <p>Luftqualität: ${airQualityType}</p>`;
-        //cityName.textContent = `Luftqualität ist ${airQualityType}`; // Minimalbeschreibung
+            <p>AQI: ${data.data.aqi} (${airQualityType})</p>
+        `, `Luftqualität: ${airQualityType}`);
     } else {
-       if (data || data.data || data.data.aqi) {
-        infoBox.innerHTML = "<p>Luftqualität Nicht Verfügbar</p>"        
-       }
-        
+        displayError("Luftqualitätsdaten nicht verfügbar");
     }
+}
+
+// Funktion zum Anzeigen der InfoBox
+function showInfoBox(content, description) {
+    cityIcon.style.display = "none";
+    infoBox.innerHTML = content;
+    cityName.textContent = description;
+}
+
+// Funktion zur Rückkehr zur Stadtansicht
+function resetToCity() {
+    cityIcon.style.display = "block";
+    infoBox.innerHTML = "";
+    cityName.textContent = "Freiburg";
 }
 
 // Hintergrundgradient basierend auf Score aktualisieren
@@ -81,27 +88,33 @@ function updateGradient(score) {
 }
 
 // Pfeiltasten-Logik
-let currentState = "city"; // Der Standardzustand ist "city"
+let currentState = "city";
 
 document.addEventListener("keydown", (e) => {
-    if (e.key === "ArrowLeft" && currentState === "city") {
-        // Wenn wir in der City-Ansicht sind und nach links drücken, zeigt das Wetter an
-        fetchData(WEATHER_API_URL, updateWeather);
-        currentState = "weather"; // Setzt den Zustand auf "weather"
-    } else if (e.key === "ArrowRight" && currentState === "weather") {
-        // Wenn wir in der Wetteransicht sind und nach rechts drücken, zeigt die Stadt an
-        cityIcon.style.display = "block"; // Zeigt das Stadticon wieder an
-        infoBox.innerHTML = ""; // Löscht die InfoBox
-        cityName.textContent = "Freiburg"; // Setzt den Stadtnamen zurück
-        currentState = "city"; // Setzt den Zustand auf "city"
-    } else if (e.key === "ArrowRight" && currentState === "city") {
-        // Wenn wir in der City-Ansicht sind und nach rechts drücken, zeigt die Luftqualität an
-        fetchData(AIR_QUALITY_API_URL, updateAirQuality);
-        currentState = "airQuality"; // Setzt den Zustand auf "airQuality"
-    } else if (e.key === "ArrowLeft" && currentState === "airQuality") {
-        // Wenn wir in der Luftqualitätsansicht sind und nach links drücken, zeigt das Wetter an
-        fetchData(WEATHER_API_URL, updateWeather);
-        currentState = "weather"; // Setzt den Zustand auf "weather"
+    switch (`${e.key}-${currentState}`) {
+        case "ArrowLeft-city":
+            fetchData(WEATHER_API_URL, updateWeather);
+            currentState = "weather";
+            break;
+
+        case "ArrowRight-weather":
+            resetToCity();
+            currentState = "city";
+            break;
+
+        case "ArrowRight-city":
+            fetchData(AIR_QUALITY_API_URL, updateAirQuality);
+            currentState = "airQuality";
+            break;
+
+        case "ArrowLeft-airQuality":
+            fetchData(WEATHER_API_URL, updateWeather);
+            currentState = "weather";
+            break;
+
+        default:
+            // Keine Aktion für andere Tasten
+            break;
     }
 });
 

@@ -78,6 +78,7 @@ function showInfoBox(content, description) {
 function resetToCity() {
     cityIcon.style.display = "block";
     infoBox.style.display = "none";
+    DataDisplay.style.display = "none";
     cityName.textContent = "Freiburg";
 }
 

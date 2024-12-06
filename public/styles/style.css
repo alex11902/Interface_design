@@ -21,7 +21,7 @@ body {
 #score-background {
     width: 80vmin;
     height: 80vmin;
-    background: radial-gradient(circle, #87ceeb 0%, #000 100%); /* Initial auf Himmelblau */
+    background: radial-gradient(circle, #44b5e2 0%, #000 67%); /* Initial auf Himmelblau */
     border-radius: 50%;
     position: absolute;
     top: 50%;
@@ -44,6 +44,8 @@ body {
 
 /* Stadtname */
 #city-name {
+    font-family: "Avenir Light", sans-serif;
+    text-align: center;
     font-size: 1.8rem;
     color: #fff;
     margin-top: 10px;
@@ -54,14 +56,14 @@ body {
 /* Infobox für Wetter/Luftqualität */
 #info-box {
     margin-top: 30px;
-    font-size: 1.2rem;
-    color: #1b7064;
+    font-size: 1.6rem;
+    color: #ffffff;
     z-index: 2;
     position: relative;
-    background: rgba(0, 0, 0, 0.7);
+    background: 2px solid white;
     padding: 15px 20px;
     border-radius: 10px;
-    border: 1px solid #87ceeb; /* Anfangsfarbe für Himmelblau */
+    border: 1px;/* Anfangsfarbe für Himmelblau */
     max-width: 300px;
     margin-left: auto;
     margin-right: auto;
@@ -74,7 +76,7 @@ body {
         transform: translate(-50%, -50%) scale(1);
     }
     50% {
-        transform: translate(-50%, -50%) scale(1.2);
+        transform: translate(-50%, -60%) scale(1.2);
     }
     100% {
         transform: translate(-50%, -50%) scale(1);

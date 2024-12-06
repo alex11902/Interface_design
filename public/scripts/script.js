@@ -7,10 +7,11 @@ const scoreBackground = document.getElementById("score-background");
 const infoBox = document.getElementById("info-box");
 const cityIcon = document.getElementById("city-icon");
 const cityName = document.getElementById("city-name");
+const DataDisplay = document.getElementById("data-display");
 
 // Icons für Wetter und Luftqualität
 const weatherIcons = {
-    Storm: "",
+    Storm: "public/assets/icons/quality/Rain.svg",
 };
 const airQualityIcons = {
     good: "./assets/icons/quality/",
@@ -25,7 +26,11 @@ async function fetchData(url, updateFunction) {
         const data = await response.json();
         updateFunction(data);
     } catch (error) {
-        console.error("Fehler beim Abrufen der Daten:", error);
+        console.error("Fehler beim Abrufen der Daten", error);
+        infoBox.innerHTML = "Fehler beim Abrufen der Daten";
+        DataDisplay.style.display = "none"; // verstecken von Datenanzeige die sich sonst hinter der Pulssphäre befindet
+        
+
     }
 }
 
@@ -62,6 +67,9 @@ function updateAirQuality(data) {
             <p>Luftqualität: ${airQualityType}</p>`;
         //cityName.textContent = `Luftqualität ist ${airQualityType}`; // Minimalbeschreibung
     } else {
+       if (data || data.data || data.data.aqi) {
+        infoBox.innerHTML = "<p>Luftqualität Nicht Verfügbar</p>"        
+       }
         
     }
 }

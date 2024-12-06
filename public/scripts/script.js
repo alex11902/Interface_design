@@ -9,6 +9,7 @@ const cityIcon = document.getElementById("city-icon");
 const cityName = document.getElementById("city-name");
 const DataDisplay = document.getElementById("data-display");
 
+
 // Icons für Wetter und Luftqualität
 const weatherIcons = {
     Storm: "public/assets/icons/quality/Rain.svg",
@@ -39,7 +40,7 @@ function updateWeather(data) {
     if (data && data.main && data.weather) {
         // Setzt das Wettericon und zeigt die Temperatur an
         const weatherType = data.weather[0].main; // Bsp.: "Rain", "Sunny", etc.
-        const temperature = data.main.temp; // Aktuelle Temperatur
+        const temperature = Math.round(data.main.temp); // Temperatur wird gerundet
         cityIcon.style.display = "none"; // Versteckt das Stadticon
         infoBox.innerHTML = `
             <img src="${weatherIcons[weatherType]}" alt="${weatherType}" style="width: 50px;">

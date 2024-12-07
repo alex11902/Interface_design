@@ -88,11 +88,7 @@ function resetToCity() {
     infoBox.style.display = "none";
     DataDisplay.style.display = "none";
     Name.textContent = "Freiburg";
-    fetchData(AIR_QUALITY_API_URL, (airQualityData) => {
-        fetchData(WEATHER_API_URL, (weatherData) => {
-            updateGradient(weatherData, airQualityData);
-        });
-    });
+    
 }
 
 // Funktion zur Aktualisierung des Hintergrundgradienten basierend auf Wetter- und Luftqualitätsscore
@@ -138,6 +134,11 @@ document.addEventListener("keydown", (e) => {
 
         case "ArrowRight-weather":
             resetToCity();
+            fetchData(WEATHER_API_URL, (weatherData) => {
+                fetchData(AIR_QUALITY_API_URL, (airQualityData) => {
+                    updateGradient(weatherData, airQualityData);
+                });
+            });
             currentState = "city";
             break;
 
@@ -153,6 +154,11 @@ document.addEventListener("keydown", (e) => {
         case "ArrowLeft-airQuality":
             // Zurück zur Stadtansicht
             resetToCity();
+            fetchData(WEATHER_API_URL, (weatherData) => {
+                fetchData(AIR_QUALITY_API_URL, (airQualityData) => {
+                    updateGradient(weatherData, airQualityData);
+                });
+            });
             currentState = "city";
             break;
 

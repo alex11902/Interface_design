@@ -105,7 +105,7 @@ function updateGradient(weatherData, airQualityData) {
 
     // 4. Hintergrundfarbe basierend auf dem Score setzen
     const gradientColor = score > 70 ? "#00b2ff7d" : score > 40 ? "#888" : "#333";
-    scoreBackground.style.background = `radial-gradient(circle, ${gradientColor} 0%, #000 100%)`;
+    scoreBackground.style.background = `radial-gradient(circle, ${gradientColor} 0%, #000 67%)`;
 
     console.log(`Score: ${score} | Wetter: ${weatherScore} | Luftqualität: ${airQualityScore}`);
 }

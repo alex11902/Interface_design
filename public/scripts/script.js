@@ -120,45 +120,34 @@ function normalize(value, min, max, invert = false) {
 
 // Pfeiltasten-Logik
 let currentState = "city";
-
 document.addEventListener("keydown", (e) => {
     switch (`${e.key}-${currentState}`) {
         case "ArrowLeft-city":
+            // Zeigt das Wetter an
             fetchData(WEATHER_API_URL, (weatherData) => {
                 fetchData(AIR_QUALITY_API_URL, (airQualityData) => {
                     updateGradient(weatherData, airQualityData);
                 });
+                updateWeather(weatherData);
             });
             currentState = "weather";
             break;
 
-        case "ArrowRight-weather":
-            resetToCity();
-            fetchData(WEATHER_API_URL, (weatherData) => {
-                fetchData(AIR_QUALITY_API_URL, (airQualityData) => {
-                    updateGradient(weatherData, airQualityData);
-                });
-            });
-            currentState = "city";
-            break;
-
         case "ArrowRight-city":
+            // Zeigt die Luftqualität an
             fetchData(AIR_QUALITY_API_URL, (airQualityData) => {
                 fetchData(WEATHER_API_URL, (weatherData) => {
                     updateGradient(weatherData, airQualityData);
                 });
+                updateAirQuality(airQualityData);
             });
             currentState = "airQuality";
             break;
 
-        case "ArrowLeft-airQuality":
-            // Zurück zur Stadtansicht
+        case "ArrowUp-weather":
+        case "ArrowUp-airQuality":
+            // Zeigt die Stadtansicht an
             resetToCity();
-            fetchData(WEATHER_API_URL, (weatherData) => {
-                fetchData(AIR_QUALITY_API_URL, (airQualityData) => {
-                    updateGradient(weatherData, airQualityData);
-                });
-            });
             currentState = "city";
             break;
 
@@ -167,6 +156,7 @@ document.addEventListener("keydown", (e) => {
             break;
     }
 });
+
 
 // Initialdaten abrufen und anzeigen
 fetchData(WEATHER_API_URL, updateWeather);

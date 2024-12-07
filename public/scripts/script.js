@@ -2,16 +2,24 @@
 const WEATHER_API_URL = "https://interface-design.onrender.com/weather";
 const AIR_QUALITY_API_URL = "https://interface-design.onrender.com/air-quality";
 
+// Gradient nach Datenabruf initial setzen
+fetchData(WEATHER_API_URL, (weatherData) => {
+    fetchData(AIR_QUALITY_API_URL, (airQualityData) => {
+        updateGradient(weatherData, airQualityData);
+    });
+});
+
 // DOM-Elementreferenzen
 const scoreBackground = document.getElementById("score-background");
 const infoBox = document.getElementById("info-box");
 const cityIcon = document.getElementById("city-icon");
-const cityName = document.getElementById("city-name");
+const Name = document.getElementById("namespace");
 const DataDisplay = document.getElementById("data-display");
 
 // Icons für Wetter und Luftqualität
 const weatherIcons = {
     Storm: "./public/assets/icons/quality/Rain.svg",
+
 };
 const airQualityIcons = {
     good: "./assets/icons/quality/",
@@ -56,7 +64,7 @@ function updateWeather(data) {
 // Luftqualitätsdaten aktualisieren
 function updateAirQuality(data) {
     if (data?.data?.aqi !== undefined) {
-        const airQualityType = data.data.aqi <= 50 ? "good" : data.data.aqi <= 100 ? "medium" : "bad";
+        const airQualityType = data.data.aqi <= 50 ? "Gut" : data.data.aqi <= 85 ? "Mäßig" : "Schlecht";
 
         showInfoBox(`
             <img src="${airQualityIcons[airQualityType]}" alt="${airQualityType}" style="width: 50px;">
@@ -71,7 +79,7 @@ function updateAirQuality(data) {
 function showInfoBox(content, description) {
     cityIcon.style.display = "none";
     infoBox.innerHTML = content;
-    cityName.textContent = description;
+    Name.textContent = description;
 }
 
 // Funktion zur Rückkehr zur Stadtansicht
@@ -79,14 +87,35 @@ function resetToCity() {
     cityIcon.style.display = "block";
     infoBox.style.display = "none";
     DataDisplay.style.display = "none";
-    cityName.textContent = "Freiburg";
+    Name.textContent = "Freiburg";
 }
 
-// Hintergrundgradient basierend auf Score aktualisieren
-function updateGradient(score) {
-    const gradientColor = score > 70 ? "#00b2ff7d" : score > 40 ? "#777" : "#333";
+// Funktion zur Aktualisierung des Hintergrundgradienten basierend auf Wetter- und Luftqualitätsscore
+function updateGradient(weatherData, airQualityData) {
+    // 1. Wetterdaten normalisieren (z. B. Temperatur)
+    const temperature = weatherData.main.temp; // Aktuelle Temperatur
+    const weatherScore = normalize(temperature, 0, 30); // Skaliere von 0°C bis 30°C
+
+    // 2. Luftqualitätsdaten normalisieren (z. B. AQI)
+    const aqi = airQualityData.data.aqi; // Air Quality Index
+    const airQualityScore = normalize(aqi, 0, 200, true); // Skaliere von 0 (ideal) bis 200 (schlecht)
+
+    // 3. Gesamt-Score berechnen (50% Gewichtung für beide)
+    const score = 0.5 * weatherScore + 0.5 * airQualityScore;
+
+    // 4. Hintergrundfarbe basierend auf dem Score setzen
+    const gradientColor = score > 70 ? "#00b2ff7d" : score > 40 ? "#888" : "#333";
     scoreBackground.style.background = `radial-gradient(circle, ${gradientColor} 0%, #000 100%)`;
+
+    console.log(`Score: ${score} | Wetter: ${weatherScore} | Luftqualität: ${airQualityScore}`);
 }
+
+// Funktion zur Normalisierung eines Werts zwischen min und max
+function normalize(value, min, max, invert = false) {
+    const normalized = (value - min) / (max - min);
+    return invert ? 100 - Math.min(Math.max(normalized * 100, 0), 100) : Math.min(Math.max(normalized * 100, 0), 100);
+}
+
 
 // Pfeiltasten-Logik
 let currentState = "city";
@@ -94,7 +123,11 @@ let currentState = "city";
 document.addEventListener("keydown", (e) => {
     switch (`${e.key}-${currentState}`) {
         case "ArrowLeft-city":
-            fetchData(WEATHER_API_URL, updateWeather);
+            fetchData(WEATHER_API_URL, (weatherData) => {
+                fetchData(AIR_QUALITY_API_URL, (airQualityData) => {
+                    updateGradient(weatherData, airQualityData);
+                });
+            });
             currentState = "weather";
             break;
 
@@ -104,7 +137,11 @@ document.addEventListener("keydown", (e) => {
             break;
 
         case "ArrowRight-city":
-            fetchData(AIR_QUALITY_API_URL, updateAirQuality);
+            fetchData(AIR_QUALITY_API_URL, (airQualityData) => {
+                fetchData(WEATHER_API_URL, (weatherData) => {
+                    updateGradient(weatherData, airQualityData);
+                });
+            });
             currentState = "airQuality";
             break;
 

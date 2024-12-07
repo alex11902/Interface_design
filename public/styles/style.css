@@ -43,7 +43,7 @@ body {
 }
 
 /* Stadtname */
-#city-name {
+#Name {
     font-family: "Avenir Light", sans-serif;
     text-align: center;
     font-size: 1.8rem;
@@ -51,6 +51,7 @@ body {
     margin-top: 10px;
     z-index: 2;
     position: relative;
+    text-align: center;
 }
 
 /* Infobox für Wetter/Luftqualität */

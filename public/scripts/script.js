@@ -88,6 +88,11 @@ function resetToCity() {
     infoBox.style.display = "none";
     DataDisplay.style.display = "none";
     Name.textContent = "Freiburg";
+    fetchData(AIR_QUALITY_API_URL, (airQualityData) => {
+        fetchData(WEATHER_API_URL, (weatherData) => {
+            updateGradient(weatherData, airQualityData);
+        });
+    });
 }
 
 // Funktion zur Aktualisierung des Hintergrundgradienten basierend auf Wetter- und Luftqualitätsscore

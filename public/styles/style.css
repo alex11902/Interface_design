@@ -43,7 +43,7 @@ body {
 }
 
 /* Stadtname */
-#Name {
+#namespace {
     font-family: "Avenir Light", sans-serif;
     text-align: center;
     font-size: 1.8rem;

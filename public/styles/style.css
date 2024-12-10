@@ -33,7 +33,7 @@ body {
 }
 
 /* SVG-Stadt-Icon */
-#city-icon {
+#svg-icon {
     width: 60%;
     max-height: 80%; /* Dynamisch basierend auf Bildschirmhöhe */
     height: auto;

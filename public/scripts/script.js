@@ -15,7 +15,7 @@ fetchData(WEATHER_API_URL, (weatherData) => {
 // DOM-Elementreferenzen
 const scoreBackground = document.getElementById("score-background");
 const infoBox = document.getElementById("info-box");
-const cityIcon = document.getElementById("city-icon");
+const cityIcon = document.getElementById("svg-icon");
 const Name = document.getElementById("namespace");
 const DataDisplay = document.getElementById("data-display");
 
@@ -120,25 +120,31 @@ function displayError(message) {
 }
 
 //Wetterdaten und icons dynamisch anzeigen
+// Wetterdaten aktualisieren
 function updateWeather(data) {
     if (data?.main?.temp && data.weather?.[0]?.main) {
-        const weatherType = data.weather[0].main; // Wettertyp (z. B. "Storm", "Rain", etc.)
-        const temperature = Math.round(data.main.temp); // Temperatur
+        const weatherType = data.weather[0].main;
+        const temperature = Math.round(data.main.temp);
 
-        // Wetter-Icon anzeigen
-        const iconType = mapWeatherTypeToIcon(weatherType); // Wettertyp zu Icon-Typ
-        showWeatherIcon(iconType);
+        // Setze das Icon basierend auf dem Wettertyp
+        const weatherIcon = weatherIcons[weatherType];
+        
+        if (weatherIcon) {
+            document.getElementById("svg-icon").innerHTML = '';  // Entfernt das vorherige Icon
+            document.getElementById("svg-icon").appendChild(weatherIcon);  // Fügt das neue Icon hinzu
+        }
 
-        // Info anzeigen
-        const description = data.weather[0].description;
         showInfoBox(`
             <p>Wetter: ${weatherType}</p>
             <p>Temperatur: ${temperature}°C</p>
-        `, description);
+        `, `${data.weather[0].description}`);
     } else {
         displayError("Wetterdaten nicht verfügbar");
     }
 }
+
+
+
 
 // Mapping von API-Wettertypen zu deinen Icon-Typen
 function mapWeatherTypeToIcon(weatherType) {

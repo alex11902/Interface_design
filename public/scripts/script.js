@@ -2,8 +2,7 @@
 const WEATHER_API_URL = "https://interface-design.onrender.com/weather";
 const AIR_QUALITY_API_URL = "https://interface-design.onrender.com/air-quality";
 
-console.log("AIR_QUALITY_API_URL:", AIR_QUALITY_API_URL);
-console.log("WEATHER_API_URL:", WEATHER_API_URL);
+
 
 // Gradient nach Datenabruf initial setzen
 fetchData(WEATHER_API_URL, (weatherData) => {

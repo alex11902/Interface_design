@@ -69,6 +69,19 @@ body {
     margin-left: auto;
     margin-right: auto;
     text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%; /* Passt sich der Höhe des Containers an */
+}
+
+#info-box > div {
+    text-align: center;
+}
+
+svg {
+    max-width: 100%; /* Verhindert, dass das Icon zu groß wird */
+    max-height: 80vh; /* Passt die Höhe an die Ansichtshöhe an */
 }
 
 /* Animation für Sphäre */

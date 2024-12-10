@@ -20,18 +20,78 @@ const DataDisplay = document.getElementById("data-display");
 
 // Icons für Wetter und Luftqualität
 const weatherIcons = {
-    weatherDisplayStorm: document.getElementById("weather-Storm"),
-    weatherDisplayRain: document.getElementById("weather-Rain"),
-    weatherDisplaySunny: document.getElementById("weather-Sun"),
-    weatherDisplayWindy: document.getElementById("weather-Wind"),
-    weatherDisplayNameSnowy: document.getElementById("weather-Snow"),
+    Storm: document.getElementById("weather-Storm"),
+    Rain: document.getElementById("weather-Rain"),
+    Sun: document.getElementById("weather-Sun"),
+    Wind: document.getElementById("weather-Wind"),
+    Snow: document.getElementById("weather-Snow"),
 
 };
+
+// Funktion, um alle Icons auszublenden
+function hideAllIcons() {
+    Object.values(weatherIcons).forEach((icon) => {
+        icon.hidden = true; // Alle Icons ausblenden
+    });
+}
+
+// Funktion, um ein bestimmtes Icon anzuzeigen
+function showWeatherIcon(type) {
+    hideAllIcons(); // Zuerst alle ausblenden
+    const selectedIcon = weatherIcons[type];
+    if (selectedIcon) {
+        selectedIcon.hidden = false; // Nur das gewünschte Icon anzeigen
+    } else {
+        console.error(`Kein Icon für den Typ ${type} gefunden.`);
+    }
+}
+
+
+// Luftqualitäts-Icons-Array
 const airQualityIcons = {
-    good: "./assets/icons/quality/",
-    medium: "./assets/icons/quality/airquality_medium.svg",
-    bad: "public/assets/icons/quality/airquality_bad.svg",
+    Good: document.getElementById("airquality_Good"),
+    Medium: document.getElementById("airquality_Medium"),
+    Bad: document.getElementById("airquality_Bad"),
 };
+
+// Funktion, um alle Icons auszublenden
+function hideAllAirQualityIcons() {
+    Object.values(airQualityIcons).forEach((icon) => {
+        icon.hidden = true; // Alle Icons ausblenden
+    });
+}
+
+// Funktion, um ein bestimmtes Icon basierend auf der Luftqualität anzuzeigen
+function showAirQualityIcon(qualityType) {
+    hideAllAirQualityIcons(); // Zuerst alle ausblenden
+    const selectedIcon = airQualityIcons[qualityType];
+    if (selectedIcon) {
+        selectedIcon.hidden = false; // Gewünschtes Icon anzeigen
+    } else {
+        console.error(`Kein Icon für Luftqualitätstyp "${qualityType}" gefunden.`);
+    }
+}
+
+// Luftqualitätsdaten aktualisieren
+function updateAirQuality(data) {
+    if (data?.data?.aqi !== undefined) {
+        // AQI basierend auf den Werten in Kategorien einteilen
+        const airQualityType =
+            data.data.aqi <= 50 ? "Good" :
+            data.data.aqi <= 85 ? "Medium" :
+            "Bad";
+
+        // Luftqualitäts-Icon anzeigen
+        showAirQualityIcon(airQualityType);
+
+        // Beschreibung und AQI anzeigen
+        const description = `Luftqualität: ${airQualityType}`;
+        const aqi = `AQI: ${data.data.aqi}`;
+        showInfoBox(`<p>${description}</p><p>${aqi}</p>`, description);
+    } else {
+        displayError("Luftqualitätsdaten nicht verfügbar.");
+    }
+}
 
 // Funktion zum Abrufen und Verarbeiten von API-Daten
 async function fetchData(url, updateFunction) {
@@ -51,21 +111,41 @@ function displayError(message) {
     DataDisplay.style.display = "none";
 }
 
-// Wetterdaten aktualisieren
+//Wetterdaten und icons dynamisch anzeigen
 function updateWeather(data) {
     if (data?.main?.temp && data.weather?.[0]?.main) {
-        const weatherType = data.weather[0].main;
-        const temperature = Math.round(data.main.temp);
+        const weatherType = data.weather[0].main; // Wettertyp (z. B. "Storm", "Rain", etc.)
+        const temperature = Math.round(data.main.temp); // Temperatur
 
+        // Wetter-Icon anzeigen
+        const iconType = mapWeatherTypeToIcon(weatherType); // Wettertyp zu Icon-Typ
+        showWeatherIcon(iconType);
+
+        // Info anzeigen
+        const description = data.weather[0].description;
         showInfoBox(`
-            <img src="${weatherIcons[weatherType]}" alt="${weatherType}" style="width: 50px;">
             <p>Wetter: ${weatherType}</p>
             <p>Temperatur: ${temperature}°C</p>
-        `, `${data.weather[0].description}`);
+        `, description);
     } else {
         displayError("Wetterdaten nicht verfügbar");
     }
 }
+
+// Mapping von API-Wettertypen zu deinen Icon-Typen
+function mapWeatherTypeToIcon(weatherType) {
+    const mapping = {
+        Thunderstorm: "Storm",
+        Rain: "Rain",
+        Drizzle: "Rain",
+        Snow: "Snow",
+        Clear: "Sun",
+        Clouds: "Wind",
+    };
+    return mapping[weatherType] || "Sun"; // Fallback zu "Sun"
+}
+
+
 
 // Luftqualitätsdaten aktualisieren
 function updateAirQuality(data) {

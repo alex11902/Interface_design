@@ -115,6 +115,7 @@ async function fetchData(url, updateFunction) {
 // Funktion zum Anzeigen eines Fehlers
 function displayError(message) {
     infoBox.innerHTML = `<p>${message}</p>`;
+    console.error(message);
     DataDisplay.style.display = "none";
 }
 

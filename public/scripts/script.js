@@ -96,17 +96,27 @@ function updateAirQuality(data) {
     }
 }
 
-// Funktion zum Abrufen und Verarbeiten von API-Daten
+//fetch data mit debugging -log
 async function fetchData(url, updateFunction) {
+    if (!url) {
+        console.error("Die URL ist undefined oder leer:", url);
+        return;
+    }
+    console.log("Fetch URL:", url); // Zeigt die URL, die aufgerufen wird
+
     try {
         const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`HTTP-Fehler: ${response.status}`);
+        }
         const data = await response.json();
+        console.log("Daten erfolgreich abgerufen:", data); // Gibt die empfangenen Daten aus
         updateFunction(data);
     } catch (error) {
-        console.error("Fehler beim Abrufen der Daten", error);
-        displayError("Daten konnten nicht abgerufen werden");
+        console.error("Fehler beim Abrufen der Daten:", error);
     }
 }
+
 
 // Funktion zum Anzeigen eines Fehlers
 function displayError(message) {

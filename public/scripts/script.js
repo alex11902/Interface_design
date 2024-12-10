@@ -9,6 +9,7 @@ fetchData(WEATHER_API_URL, (weatherData) => {
     });
 });
 
+
 // DOM-Elementreferenzen
 const scoreBackground = document.getElementById("score-background");
 const infoBox = document.getElementById("info-box");

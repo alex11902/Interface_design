@@ -17,9 +17,14 @@ const cityIcon = document.getElementById("city-icon");
 const Name = document.getElementById("namespace");
 const DataDisplay = document.getElementById("data-display");
 
+
 // Icons für Wetter und Luftqualität
 const weatherIcons = {
-    Storm: "./public/assets/icons/quality/Rain.svg",
+    weatherDisplayStorm: document.getElementById("weather-Storm"),
+    weatherDisplayRain: document.getElementById("weather-Rain"),
+    weatherDisplaySunny: document.getElementById("weather-Sun"),
+    weatherDisplayWindy: document.getElementById("weather-Wind"),
+    weatherDisplayNameSnowy: document.getElementById("weather-Snow"),
 
 };
 const airQualityIcons = {

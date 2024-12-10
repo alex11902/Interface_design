@@ -74,26 +74,21 @@ function showAirQualityIcon(qualityType) {
     }
 }
 
-// Luftqualitätsdaten aktualisieren
+//
 function updateAirQuality(data) {
+    console.log("Air Quality Data:", data); // Debug-Log
     if (data?.data?.aqi !== undefined) {
-        // AQI basierend auf den Werten in Kategorien einteilen
-        const airQualityType =
-            data.data.aqi <= 50 ? "Good" :
-            data.data.aqi <= 85 ? "Medium" :
-            "Bad";
+        const airQualityType = data.data.aqi <= 50 ? "Good" : data.data.aqi <= 85 ? "Medium" : "Bad";
 
-        // Luftqualitäts-Icon anzeigen
-        showAirQualityIcon(airQualityType);
-
-        // Beschreibung und AQI anzeigen
-        const description = `Luftqualität: ${airQualityType}`;
-        const aqi = `AQI: ${data.data.aqi}`;
-        showInfoBox(`<p>${description}</p><p>${aqi}</p>`, description);
+        showInfoBox(`
+            <img src="${airQualityIcons[airQualityType]}" alt="${airQualityType}" style="width: 50px;">
+            <p>AQI: ${data.data.aqi} (${airQualityType})</p>`, 
+            `Luftqualität: ${airQualityType}`);
     } else {
-        displayError("Luftqualitätsdaten nicht verfügbar.");
+        displayError("Luftqualitätsdaten nicht verfügbar");
     }
 }
+
 
 //fetch data mit debugging -log
 async function fetchData(url, updateFunction) {

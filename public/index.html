@@ -9,6 +9,8 @@ name<!DOCTYPE html>
     <link rel="icon" href="./assets/icons/favicon.png" type="image/x-icon">
 </head>
 <body>
+
+    
     <div id="app">
         <!-- Überschrift -->
 i
@@ -34,7 +36,11 @@ i
     </div>
 
     <!-- JavaScript einbinden -->
-    <script src="./scripts/script.js"></script>
+    <script src="./scripts/script.js">
+    document.addEventListener("DOMContentLoaded", () => {
+        resetToCity(); // Initiale Ansicht setzen
+    });
+    </script>
 <!--Wettericons hier-->
     <div id="weather-Storm" hidden>
         <svg height="800px" width="800px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 480 480" xml:space="preserve" fill="#000000">

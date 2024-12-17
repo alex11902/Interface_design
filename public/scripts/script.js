@@ -166,22 +166,27 @@ function mapWeatherTypeToIcon(weatherType) {
 // Luftqualitätsdaten aktualisieren
 function updateAirQuality(data) {
     if (data?.data?.aqi !== undefined) {
-        const airQualityType = data.data.aqi <= 50 ? "Gut" : data.data.aqi <= 85 ? "Mäßig" : "Schlecht";
+        const airQualityType = data.data.aqi <= 50 ? "Good" : data.data.aqi <= 85 ? "Medium" : "Bad";
 
-        showInfoBox(`
-            <img src="${airQualityIcons[airQualityType]}" alt="${airQualityType}" style="width: 50px;">
-            <p>AQI: ${data.data.aqi} (${airQualityType})</p>`, 
-            `Luftqualität: ${airQualityType}`);
+        showAirQualityIcon(airQualityType);
+        showInfoBox(
+            `<p>Luftqualität: ${airQualityType} (AQI: ${data.data.aqi})</p>`,
+            `Air Quality: ${airQualityType}`
+        );
     } else {
         displayError("Luftqualitätsdaten nicht verfügbar");
     }
 }
 
+
 // Funktion zum Anzeigen der InfoBox
 function showInfoBox(content, description) {
-    cityIcon.style.display = "none";
+    const infoBox = document.getElementById("info-box");
+    const namespace = document.getElementById("namespace");
+
     infoBox.innerHTML = content;
-    Name.textContent = description;
+    infoBox.style.display = "block";
+    namespace.textContent = description;
 }
 
 // Funktion zur Rückkehr zur Stadtansicht
@@ -254,8 +259,7 @@ document.addEventListener("keydown", (e) => {
             break;
 
         default:
-            // Keine Aktion für andere Tasten
-            break;
+            console.warn(`Unbekannte Eingabe: ${e.key}`);
     }
 });
 

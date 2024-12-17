@@ -122,7 +122,7 @@ function displayError(message) {
 //Wetterdaten und icons dynamisch anzeigen
 // Wetterdaten aktualisieren
 function updateWeather(data) {
-    
+
     if (data?.main?.temp && data.weather?.[0]?.main) {
         const weatherType = data.weather[0].main;
         const temperature = Math.round(data.main.temp);
@@ -131,10 +131,11 @@ function updateWeather(data) {
         const weatherIcon = weatherIcons[weatherType];
         
         if (weatherIcon) {
-            document.getElementById("svg-icon").innerHTML = '';  // Entfernt das vorherige Icon
-            document.getElementById("svg-icon").appendChild(weatherIcon);  // Fügt das neue Icon hinzu
-        }
-
+    document.getElementById("svg-icon").innerHTML = ''; 
+    document.getElementById("svg-icon").appendChild(weatherIcon.cloneNode(true));
+    } else {
+    displayError("Weather icon not found!");
+    }
         showInfoBox(`
             <p>Wetter: ${weatherType}</p>
             <p>Temperatur: ${temperature}°C</p>

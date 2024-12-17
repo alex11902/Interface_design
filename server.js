@@ -45,3 +45,7 @@ app.get("/air-quality", async (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server läuft auf http://localhost:${PORT}`);
 });
+if (!app.listen) {
+    displayError("hier gibts nichts zu sehen");
+    console.warn("hat nicht funktioniert")
+}

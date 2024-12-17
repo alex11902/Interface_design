@@ -122,6 +122,7 @@ function displayError(message) {
 //Wetterdaten und icons dynamisch anzeigen
 // Wetterdaten aktualisieren
 function updateWeather(data) {
+    
     if (data?.main?.temp && data.weather?.[0]?.main) {
         const weatherType = data.weather[0].main;
         const temperature = Math.round(data.main.temp);

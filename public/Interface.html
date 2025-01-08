@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="favicon.png" alt="Urban Reflections" />
+    <title>Urban Reflections</title>
+    <style>
+        /* General Styling */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Avenir Light, sans-serif;
+            background: auto;
+            color: black;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            opacity: 0; /* Start with opacity 0 */
+            transform: translateY(-50px); /* Start from 50px above */
+            animation: fadeInFromTop 10s forwards; /* Apply the animation */
+        }
+
+        /* Animation Definition */
+        @keyframes fadeInFromTop {
+            0% {
+                opacity: 0;
+                transform: translateY(-10vh);
+            }
+            45% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(10vh);
+            }
+        }
+
+        .container {
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            position: relative;
+        }
+
+        .circle {
+            width: 20vh;
+            height: 20vh;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px;
+            color: black;
+            font-size: 1.2rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #4caf50, #81c784);
+            transition: background 0.5s ease, opacity 0.3s ease;
+            cursor: grab;
+            position: relative;
+            opacity: 0; /* Initially invisible */
+        }
+
+        .circle.temperature {
+            background: linear-gradient(-45deg, #ff835d, #ff3c00);
+            z-index: 2;
+        }
+
+        .circle.air-quality {
+            background: linear-gradient(45deg, #2ca0fe, #0055ff);
+            z-index: 2;
+        }
+        
+        .circle.droppable {
+            width: 30vh;
+            height: 30vh;
+            border: none;
+            background: none;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: black;
+            font-size: 1.5em;
+            animation: pulse 10s infinite;
+            z-index: 1;
+            background: radial-gradient(circle, royalblue 77%, #12121200 67%);
+            opacity: 1;/* Initially visible*/
+        }
+
+        .instructions {
+            font-size: 0.9rem;
+            margin-top: 10px;
+            opacity: 1;
+            animation: fadeInFromTop 10s forwards;
+            z-index: 2;
+            text-align: center;
+        }
+
+        /* Animation für Sphäre */
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .invisible {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .visible{
+            opacity: 1;
+            pointer-events: all;
+        }
+    </style>
+</head>
+<body>
+    <h1>Urban Reflections</h1>
+    <div class="container">
+        <div class="circle temperature" id="temperature" >Loading...</div>
+        <div class="circle droppable" id="dropZone">Click here</div>
+        <div class="circle air-quality" id="airQuality" >Loading...</div>
+    </div>
+    <div class="instructions">Ziehe die Kleineren Kreise in den Größeren um einen Score zu Interpolieren</div>
+    
+    <script>
+        const API_KEYS = {
+            weather: "ccfe51382ba398aa60bb08056f21c443",
+            airQuality: "c3e5367de336c145cdbd0903027a41af955b1579"
+        };
+
+        const elements = {
+            temperature: document.getElementById("temperature"),
+            airQuality: document.getElementById("airQuality"),
+            dropZone: document.getElementById("dropZone"),
+        };
+
+        let dropZoneColors = [];
+
+        document.addEventListener("DOMContentLoaded", function() {
+        // Deine Initialisierungslogik kommt hier
+        dropZone.textContent = "Click me pls :)";
+        isFirstClick = true;
+        elements.airQuality.classList.add("invisible");
+        elements.temperature.classList.add("invisible");
+        initApp();
+
+        });
+
+        function initApp() {
+    // Deine Funktionen und Event-Listener werden hier gesetzt
+
+    elements.temperature.addEventListener("dragstart", handleDragStart);
+    elements.airQuality.addEventListener("dragstart", handleDragStart);
+    elements.dropZone.addEventListener("dragover", handleDragOver);
+    elements.dropZone.addEventListener("drop", handleDrop);
+    elements.dropZone.addEventListener("click", handleDropZoneClick);
+    elements.temperature.addEventListener("dragend", handleDragEnd);
+    elements.airQuality.addEventListener("dragend", handleDragEnd);
+
+    // Hier kannst du auch andere Initialisierungen durchführen, wie z.B. Datenabfragen
+    updateData();
+    setInterval(updateData, 300 * 1000); // Alle 300 Sekunden Daten aktualisieren
+    }
+
+
+        async function fetchWeatherData() {
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=Freiburg&appid=${API_KEYS.weather}&units=metric`;
+            const response = await fetch(url);
+            const data = await response.json();
+            return data.main.temp;
+        }
+
+        async function fetchAirQualityData() {
+            const url = `https://api.waqi.info/feed/Freiburg/?token=${API_KEYS.airQuality}`;
+            const response = await fetch(url);
+            const data = await response.json();
+            return data.data.aqi;
+        }
+
+        async function updateData() {
+            try {
+                const temp = await fetchWeatherData();
+                const aqi = await fetchAirQualityData();
+
+                elements.temperature.textContent = `${temp}°C`;
+                elements.airQuality.textContent = `AQI: ${aqi}`;
+
+                updateCircleColors(temp, aqi);
+            } catch (error) {
+                elements.temperature.textContent = `No Data`;
+                elements.airQuality.textContent = `No Data`;
+            }
+        }
+
+        function updateCircleColors(temp, aqi) {
+            const tempColor = temp > 25 ? "#ff5722" : "#4caf50";
+            const aqiColor = aqi > 100 ? "#ff1744" : "#2196f3";
+
+            elements.temperature.style.background = `linear-gradient(135deg, ${tempColor})`;
+            elements.airQuality.style.background = `linear-gradient(135deg, ${aqiColor})`;
+
+            elements.temperature.dataset.color = tempColor;
+            elements.airQuality.dataset.color = aqiColor;
+        }
+
+        function mixColors(color1, color2) {
+            const hexToRgb = (hex) => {
+                const bigint = parseInt(hex.slice(1), 16);
+                return [(bigint >> 16) & 255, (bigint >> 8) & 255, bigint & 255];
+            };
+
+            const rgbToHex = (rgb) => `#${rgb.map(val => val.toString(16).padStart(2, "0")).join("")}`;
+
+            const rgb1 = hexToRgb(color1);
+            const rgb2 = hexToRgb(color2);
+            const mixedRgb = rgb1.map((val, idx) => Math.floor((val + rgb2[idx]) / 2));
+
+            return rgbToHex(mixedRgb);
+        }
+
+        function handleDragStart(event) {
+            if (event.target.classList.contains("invisible")) {
+                event.preventDefault(); // Prevent dragging if invisible
+            }else{
+            event.dataTransfer.setData("text", event.target.id);
+            event.target.classList.remove("visible");
+            event.target.classList.add("invisible");
+            }
+        }
+
+        function handleDrop(event) {
+            event.preventDefault();
+            const draggedId = event.dataTransfer.getData("text");
+            const draggedElement = document.getElementById(draggedId);
+            console.log("handledropevent");
+
+            if (draggedElement) {
+                const color = draggedElement.dataset.color;
+                dropZoneColors.push(color);
+                console.log("handledropeventIf_draggedelement=true");
+                if (dropZoneColors.length >= 2) {
+                    console.log("handledropeventIf_draggedelement=true&=2");
+                    const mixedColor = mixColors(dropZoneColors[0], dropZoneColors[1]);
+                    elements.dropZone.style.background = mixedColor;
+                }
+            }
+        }
+        function handleDragEnd(event){
+            if (!event.target.classList.contains("invisible")) {
+                event.target.classList.add("invisible");
+                event.target.style.opacity = 0;
+            }
+                console.log("handleDragEnd_Success(?)");
+        }
+
+        function handleDragOver(event) {
+            event.preventDefault();
+        }
+
+        function handleDropZoneClick() {
+        if (isFirstClick) {
+            elements.temperature.classList.add("visible");
+            elements.airQuality.classList.add("visible");
+            elements.airQuality.classList.remove("invisible");
+            elements.temperature.classList.remove("invisible");
+                isFirstClick = false;
+                console.log("handledropzoneclick:isFirstclick");
+            } else {
+                resetDropZone();
+                console.log("handledropzoneclickelse");
+                //do nothing
+            }
+        }
+
+        function resetDropZone() {
+        if (dropZoneColors.length >= 2) {
+        elements.dropZone.style.background = "crimson";
+        dropZoneColors = [];
+        [elements.temperature, elements.airQuality].forEach(el => el.classList.add("invisible"));
+            }
+        }
+    </script>
+</body>
+</html>

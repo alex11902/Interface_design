@@ -65,7 +65,7 @@
             font-size: 1.2rem;
             font-weight: bold;
             background: linear-gradient(135deg, #4caf50, #81c784);
-            transition: background 0.5s ease, opacity 0.3s ease;
+            /* transition: background 0.5s ease, opacity 0.3s ease; */
             cursor: grab;
             position: relative;
             opacity: 0; /* Initially invisible */
@@ -239,10 +239,14 @@
         function handleDragStart(event) {
             if (event.target.classList.contains("invisible")) {
                 event.preventDefault(); // Prevent dragging if invisible
+                console.log("handleDragStart: Prevented!");
             }else{
+            
             event.dataTransfer.setData("text", event.target.id);
             event.target.classList.remove("visible");
             event.target.classList.add("invisible");
+            console.log("handleDragStart: else")
+
             }
         }
 
@@ -257,7 +261,7 @@
                 dropZoneColors.push(color);
                 console.log("handledropeventIf_draggedelement=true");
                 if (dropZoneColors.length >= 2) {
-                    console.log("handledropeventIf_draggedelement=true&=2");
+                    console.log("handledropeventIf_draggedelement=true&>=2");
                     const mixedColor = mixColors(dropZoneColors[0], dropZoneColors[1]);
                     elements.dropZone.style.background = mixedColor;
                 }
@@ -285,7 +289,7 @@
                 console.log("handledropzoneclick:isFirstclick");
             } else {
                 resetDropZone();
-                console.log("handledropzoneclickelse");
+                console.log("handledropzoneclickelse_resetDropZone");
                 //do nothing
             }
         }
